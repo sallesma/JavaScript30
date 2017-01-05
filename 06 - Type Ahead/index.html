@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+<script>
+  const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  let cities = [];
+  let input = document.querySelector('input');
+  let list = document.querySelector('.suggestions');
+
+  let cityHtml = (city, regex) => {
+    const cityName = city.city.replace(regex, `<span class="hl">${input.value}</span>`);
+    const stateName = city.state.replace(regex, `<span class="hl">${input.value}</span>`);
+    const population = city.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return `
+      <li>
+        <span class="name">${cityName}, ${stateName}</span>
+        <span class="population">${population}</span>
+      </li>
+    `
+  }
+
+  let updateCities = (cities, filter = '*') => {
+    const regex = new RegExp(filter, 'gi');
+    let filteredCities = cities.filter((city) => (city.city.match(regex) || city.state.match(regex)));
+    
+    list.innerHTML = filteredCities.map((city) => cityHtml(city, regex)).join('');
+  }
+
+  input.addEventListener('keyup', () => updateCities(cities, input.value));
+
+  fetch(endpoint)
+    .then(response => response.json())
+    .then(json => cities = json);
+
+</script>
+  </body>
+</html>
