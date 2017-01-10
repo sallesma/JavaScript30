@@ -4,6 +4,7 @@ const volumeSlider = document.querySelector('input[name="volume"');
 const speedSlider = document.querySelector('input[name="playbackRate"]');
 const plus25Button = document.querySelector('button[data-skip="25"]');
 const minus10Button = document.querySelector('button[data-skip="-10"]');
+const fullScreenButton = document.querySelector('button.fullscreen');
 const progressBar = document.querySelector('.progress');
 const progressBarFilled = document.querySelector('.progress__filled');
 
@@ -42,12 +43,23 @@ changeCurrentTime = (e) => {
   video.currentTime = time;
 }
 
+toggleFullScreen = () => {
+  if (video.requestFullscreen) {
+    video.requestFullscreen();
+  } else if (video.mozRequestFullScreen) {
+    video.mozRequestFullScreen();
+  } else if (video.webkitRequestFullscreen) {
+    video.webkitRequestFullscreen();
+  }
+}
+
 playButton.addEventListener('click', togglePlay);
 video.addEventListener('click', togglePlay);
 volumeSlider.addEventListener('change', updateVolume);
 speedSlider.addEventListener('change', updateSpeed);
 plus25Button.addEventListener('click', forward);
 minus10Button.addEventListener('click', backward);
+fullScreenButton.addEventListener('click', toggleFullScreen);
 
 video.addEventListener('timeupdate', updateProgressBar);
 
